@@ -163,11 +163,12 @@
   background: rgba(255, 255, 255, 0.82);
   border: 2px solid rgba(45, 27, 105, 0.1);
   border-radius: var(--radius-xl);
-  cursor: pointer;
+  cursor: default;
   transition: all var(--transition-normal);
   position: relative;
   font-family: var(--font-family);
   box-shadow: 0 2px 12px rgba(45, 27, 105, 0.07);
+  animation: fadeInUp 0.35s ease-out both;
 }
 
 .lobby__friend-card:hover {
@@ -244,6 +245,124 @@
   color: #0D1117;
   font-weight: 700;
   animation: scaleIn 0.2s ease-out;
+}
+
+/* ==========================================
+   Centered wrapper (name-entry / joining / error phases)
+   ========================================== */
+.lobby--centered {
+  align-items: center;
+  justify-content: center;
+}
+
+/* ── Name entry card ── */
+.lobby__name-card {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-lg);
+  padding: var(--space-2xl);
+  width: min(440px, 92%);
+  text-align: center;
+  animation: fadeInUp 0.45s ease-out;
+}
+
+.lobby__name-emoji {
+  font-size: 3.5rem;
+  line-height: 1;
+}
+
+.lobby__name-title {
+  font-family: var(--font-display, var(--font-family));
+  font-size: 2rem;
+  font-weight: 700;
+  color: var(--text-primary);
+  margin: 0;
+}
+
+.lobby__name-hint {
+  color: var(--text-secondary);
+  font-size: 0.9rem;
+  margin: 0;
+}
+
+.lobby__name-input {
+  width: 100%;
+  padding: var(--space-md) var(--space-lg);
+  font-size: 1.4rem;
+  font-family: var(--font-display, var(--font-family));
+  border: 2px solid rgba(45, 27, 105, 0.15);
+  border-radius: var(--radius-xl);
+  background: rgba(255, 255, 255, 0.92);
+  color: var(--text-primary);
+  text-align: center;
+  outline: none;
+  transition: border-color var(--transition-fast), box-shadow var(--transition-fast);
+  box-sizing: border-box;
+}
+
+.lobby__name-input:focus {
+  border-color: var(--primary);
+  box-shadow: 0 0 0 3px rgba(0, 206, 201, 0.2);
+}
+
+.lobby__name-input::placeholder {
+  color: var(--text-muted);
+}
+
+.lobby__name-btn {
+  width: 100%;
+}
+
+/* ── Joining / error spinner card ── */
+.lobby__spinner-card {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-lg);
+  padding: var(--space-2xl) var(--space-3xl);
+  animation: fadeIn 0.3s ease-out;
+}
+
+.lobby__spinner {
+  width: 36px;
+  height: 36px;
+  border: 3px solid rgba(45, 27, 105, 0.12);
+  border-top-color: var(--primary);
+  border-radius: 50%;
+  animation: spin 0.8s linear infinite;
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+.lobby__spinner-text {
+  font-size: 1rem;
+  color: var(--text-secondary);
+  margin: 0;
+}
+
+/* ── Empty state (waiting for peers) ── */
+.lobby__empty {
+  color: var(--text-muted);
+  font-size: 0.9rem;
+  padding: var(--space-xl);
+  text-align: center;
+  width: 100%;
+}
+
+/* ── Demo mode tag ── */
+.lobby__demo-tag {
+  font-size: 0.65rem;
+  background: rgba(108, 92, 231, 0.12);
+  color: var(--secondary);
+  padding: 1px 7px;
+  border-radius: var(--radius-full);
+  font-weight: 600;
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+  margin-left: var(--space-xs);
 }
 
 /* "You joined" announcement banner */
