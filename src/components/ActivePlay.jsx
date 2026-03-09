@@ -535,8 +535,6 @@ export default function ActivePlay({ onNavigate, roomId, courseMins = 15 }) {
             </div>
           </div>
 
-          {/* Live video room — real participant feeds via Daily.co */}
-          <VideoRoom roomId={roomId} />
         </div>
 
         {/* Right: game world */}
@@ -617,6 +615,11 @@ export default function ActivePlay({ onNavigate, roomId, courseMins = 15 }) {
             {bursts.map((b) => (
               <SfxBurst key={b.id} text={b.text} x={b.x} y={b.y} color={b.color} onDone={() => removeBurst(b.id)} />
             ))}
+
+            {/* Picture-in-Picture video — top-right corner */}
+            <div className="play__video-pip">
+              <VideoRoom roomId={roomId} />
+            </div>
           </div>
         </div>
       </div>

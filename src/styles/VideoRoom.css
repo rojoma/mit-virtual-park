@@ -1,114 +1,83 @@
 /* ============================================
-   VideoRoom — Daily.co Real-time Video
-   Replaces the mock player feeds section in
-   the left column of ActivePlay.
+   VideoRoom — Daily Prebuilt container
+   Designed to fill .play__video-pip (PiP overlay in game world)
    ============================================ */
 
-/* Outer wrapper — takes flex:1 in play__feeds */
+/* Wrapper — always fills its parent (the PiP div) */
 .vroom {
-  flex: 1;
+  width: 100%;
+  height: 100%;
+  position: relative;
   display: flex;
-  min-height: 0;
-  animation: fadeIn 0.6s ease-out;
+  align-items: stretch;
+  background: #1a1232;
+  border-radius: inherit;
+}
+
+/* Daily iframe target div — fills the container */
+.vroom__frame {
+  width: 100%;
+  height: 100%;
+  /* Daily will inject an <iframe> here */
 }
 
 /* ==========================================
-   CTA states: idle / joining / error / waiting
+   Overlay: shown when idle / joining / error
    ========================================== */
-.vroom--cta {
+.vroom__overlay {
+  position: absolute;
+  inset: 0;
+  z-index: 10;
+  display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
   gap: var(--space-sm);
   padding: var(--space-md);
-  background: linear-gradient(135deg, rgba(108, 92, 231, 0.08), rgba(0, 206, 201, 0.08));
+  background: linear-gradient(135deg, rgba(45, 27, 105, 0.88), rgba(0, 184, 178, 0.75));
+  backdrop-filter: blur(4px);
   text-align: center;
+  border-radius: inherit;
 }
 
-.vroom--error {
-  background: linear-gradient(135deg, rgba(255, 107, 107, 0.1), rgba(255, 171, 46, 0.08));
+.vroom__overlay--error {
+  background: linear-gradient(135deg, rgba(255, 107, 107, 0.85), rgba(255, 171, 46, 0.7));
 }
 
-.vroom__cta-icon {
-  font-size: 2.4rem;
+.vroom__overlay-icon {
+  font-size: 2rem;
   line-height: 1;
+  filter: drop-shadow(0 2px 4px rgba(0,0,0,0.3));
 }
 
-.vroom__cta-hint {
-  font-size: 0.75rem;
-  color: var(--text-secondary);
+.vroom__overlay-hint {
+  font-size: 0.72rem;
+  color: rgba(255, 255, 255, 0.9);
   line-height: 1.5;
 }
 
-.vroom__cta-sub {
+.vroom__overlay-hint code {
   font-size: 0.68rem;
-  color: var(--text-muted);
+  background: rgba(255,255,255,0.15);
+  padding: 1px 4px;
+  border-radius: 3px;
   font-family: monospace;
 }
 
-.vroom__cta-btn {
+/* Join / Retry button — compact inside PiP */
+.vroom__join-btn {
   padding: var(--space-sm) var(--space-lg) !important;
-  font-size: 0.85rem !important;
-  min-height: 36px !important;
+  font-size: 0.8rem !important;
+  min-height: 34px !important;
+  border-radius: var(--radius-full) !important;
 }
 
-/* Spinner */
+/* Loading spinner */
 .vroom__spinner {
-  width: 32px;
-  height: 32px;
-  border: 3px solid rgba(0, 206, 201, 0.2);
-  border-top-color: var(--primary);
+  width: 28px;
+  height: 28px;
+  border: 3px solid rgba(255, 255, 255, 0.25);
+  border-top-color: rgba(255, 255, 255, 0.9);
   border-radius: 50%;
-  animation: spin 0.9s linear infinite;
-}
-
-/* ==========================================
-   Joined — remote participant tiles
-   ========================================== */
-.vroom__tiles {
-  display: flex;
-  gap: 2px;
-  width: 100%;
-  height: 100%;
-}
-
-.vroom__tile {
-  flex: 1;
-  position: relative;
-  overflow: hidden;
-  background: #1a1a2e;
-}
-
-.vroom__video {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  /* Mirror remote video for natural face-to-face feel */
-  transform: scaleX(-1);
-  display: block;
-}
-
-/* Label overlay */
-.vroom__tile-label {
-  position: absolute;
-  bottom: var(--space-xs);
-  left: var(--space-xs);
-  font-size: 0.68rem;
-  color: white;
-  background: rgba(0, 0, 0, 0.45);
-  padding: 2px var(--space-sm);
-  border-radius: var(--radius-sm);
-  z-index: 4;
-  display: flex;
-  align-items: center;
-  gap: 4px;
-  font-weight: 600;
-}
-
-.vroom__tile-dot {
-  width: 5px;
-  height: 5px;
-  background: var(--accent-coral);
-  border-radius: 50%;
-  animation: pulse 1.5s ease-in-out infinite;
+  animation: spin 0.8s linear infinite;
 }
