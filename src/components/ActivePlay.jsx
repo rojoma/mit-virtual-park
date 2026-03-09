@@ -3,6 +3,7 @@ import { PoseLandmarker, FilesetResolver } from '@mediapipe/tasks-vision';
 import confetti from 'canvas-confetti';
 import '../styles/ActivePlay.css';
 import ChildLock from './ChildLock';
+import VideoRoom from './VideoRoom';
 import { speakPrompt, stopSpeech } from '../utils/speech';
 
 // ── All prompts in English for course submission ──
@@ -73,7 +74,7 @@ function playSuccessSound() {
       osc.frequency.value = freq;
       const t = ctx.currentTime + i * 0.13;
       gain.gain.setValueAtTime(0, t);
-      gain.gain.linearRampToValueAtTime(0.3, t + 0.03);
+      gain.gain.linearRampToValueAtTime(0.12, t + 0.03);
       gain.gain.exponentialRampToValueAtTime(0.001, t + 0.22);
       osc.start(t);
       osc.stop(t + 0.22);
@@ -92,7 +93,7 @@ function playReactionSound() {
     osc.frequency.setValueAtTime(880, ctx.currentTime);
     osc.frequency.exponentialRampToValueAtTime(1760, ctx.currentTime + 0.12);
     gain.gain.setValueAtTime(0, ctx.currentTime);
-    gain.gain.linearRampToValueAtTime(0.25, ctx.currentTime + 0.02);
+    gain.gain.linearRampToValueAtTime(0.1, ctx.currentTime + 0.02);
     gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.28);
     osc.start(ctx.currentTime);
     osc.stop(ctx.currentTime + 0.28);
@@ -534,24 +535,8 @@ export default function ActivePlay({ onNavigate, roomId, courseMins = 15 }) {
             </div>
           </div>
 
-          {/* Mock player feeds */}
-          <div className="play__feeds-row">
-            {MOCK_PLAYERS.map((player) => (
-              <div key={player.name} className="play__camera play__camera--mock">
-                <div className="play__mock-feed" style={{ background: player.bgGradient }}>
-                  <div className="play__mock-avatar">{player.emoji}</div>
-                  <div className="play__mock-live">
-                    <div className="play__mock-live-dot" />
-                    LIVE
-                  </div>
-                </div>
-                <div className="play__camera-label">
-                  <div className="play__tracking-dot" />
-                  {player.name}
-                </div>
-              </div>
-            ))}
-          </div>
+          {/* Live video room — real participant feeds via Daily.co */}
+          <VideoRoom roomId={roomId} />
         </div>
 
         {/* Right: game world */}

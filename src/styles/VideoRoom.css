@@ -1,0 +1,114 @@
+/* ============================================
+   VideoRoom — Daily.co Real-time Video
+   Replaces the mock player feeds section in
+   the left column of ActivePlay.
+   ============================================ */
+
+/* Outer wrapper — takes flex:1 in play__feeds */
+.vroom {
+  flex: 1;
+  display: flex;
+  min-height: 0;
+  animation: fadeIn 0.6s ease-out;
+}
+
+/* ==========================================
+   CTA states: idle / joining / error / waiting
+   ========================================== */
+.vroom--cta {
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-sm);
+  padding: var(--space-md);
+  background: linear-gradient(135deg, rgba(108, 92, 231, 0.08), rgba(0, 206, 201, 0.08));
+  text-align: center;
+}
+
+.vroom--error {
+  background: linear-gradient(135deg, rgba(255, 107, 107, 0.1), rgba(255, 171, 46, 0.08));
+}
+
+.vroom__cta-icon {
+  font-size: 2.4rem;
+  line-height: 1;
+}
+
+.vroom__cta-hint {
+  font-size: 0.75rem;
+  color: var(--text-secondary);
+  line-height: 1.5;
+}
+
+.vroom__cta-sub {
+  font-size: 0.68rem;
+  color: var(--text-muted);
+  font-family: monospace;
+}
+
+.vroom__cta-btn {
+  padding: var(--space-sm) var(--space-lg) !important;
+  font-size: 0.85rem !important;
+  min-height: 36px !important;
+}
+
+/* Spinner */
+.vroom__spinner {
+  width: 32px;
+  height: 32px;
+  border: 3px solid rgba(0, 206, 201, 0.2);
+  border-top-color: var(--primary);
+  border-radius: 50%;
+  animation: spin 0.9s linear infinite;
+}
+
+/* ==========================================
+   Joined — remote participant tiles
+   ========================================== */
+.vroom__tiles {
+  display: flex;
+  gap: 2px;
+  width: 100%;
+  height: 100%;
+}
+
+.vroom__tile {
+  flex: 1;
+  position: relative;
+  overflow: hidden;
+  background: #1a1a2e;
+}
+
+.vroom__video {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  /* Mirror remote video for natural face-to-face feel */
+  transform: scaleX(-1);
+  display: block;
+}
+
+/* Label overlay */
+.vroom__tile-label {
+  position: absolute;
+  bottom: var(--space-xs);
+  left: var(--space-xs);
+  font-size: 0.68rem;
+  color: white;
+  background: rgba(0, 0, 0, 0.45);
+  padding: 2px var(--space-sm);
+  border-radius: var(--radius-sm);
+  z-index: 4;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  font-weight: 600;
+}
+
+.vroom__tile-dot {
+  width: 5px;
+  height: 5px;
+  background: var(--accent-coral);
+  border-radius: 50%;
+  animation: pulse 1.5s ease-in-out infinite;
+}
