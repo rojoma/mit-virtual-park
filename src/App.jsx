@@ -16,13 +16,13 @@ export default function App() {
   // Session data lifted to App so CoolDown can display stats
   const [sessionData, setSessionData] = useState({ score: 0, time: 0 });
 
-  // URL param ?room=ABCD → skip portal + lobby, go straight to course selection
+  // URL param ?room=ABCD → join the same lobby (not skip to course)
   useEffect(() => {
     const params = new URLSearchParams(window.location.search);
     const room = params.get('room');
     if (room) {
       setRoomId(room.toUpperCase());
-      setScreen('course');
+      setScreen('lobby');
     }
   }, []);
 
@@ -46,7 +46,7 @@ export default function App() {
   const renderScreen = () => {
     switch (screen) {
       case 'portal':   return <ParentPortal onNavigate={navigate} />;
-      case 'lobby':    return <SocialLobby onNavigate={navigate} />;
+      case 'lobby':    return <SocialLobby onNavigate={navigate} roomId={roomId} />;
       case 'course':   return <CourseSelection onNavigate={navigate} />;
       case 'play':     return <ActivePlay onNavigate={navigate} roomId={roomId} courseMins={courseMins} />;
       case 'cooldown': return <CoolDown onNavigate={navigate} score={sessionData.score} time={sessionData.time} />;

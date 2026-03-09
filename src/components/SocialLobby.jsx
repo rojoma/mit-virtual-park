@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import '../styles/SocialLobby.css';
 
 const FRIENDS = [
@@ -10,12 +10,32 @@ const FRIENDS = [
   { id: 6, name: 'Noah',  emoji: '🐧', color: '#FF7675', online: false },
 ];
 
-export default function SocialLobby({ onNavigate }) {
+// "You" card — shown after a brief delay when joining via invite link
+const YOU_CARD = { id: 'you', name: 'You', emoji: '🌟', color: '#FFD700', isYou: true };
+
+export default function SocialLobby({ onNavigate, roomId: inviteRoomId }) {
   const [selected, setSelected] = useState([]);
   const [copied, setCopied] = useState(false);
+
+  // Host generates a new code; guest reuses the invite roomId
   const [roomCode] = useState(
-    () => 'PARK-' + Math.random().toString(36).substring(2, 6).toUpperCase()
+    () => inviteRoomId || ('PARK-' + Math.random().toString(36).substring(2, 6).toUpperCase())
   );
+
+  // Guest join: "You" card slides in after 1.2 s to simulate joining the room
+  const [youJoined, setYouJoined] = useState(false);
+  // Pulse the online count label once "You" appears
+  const [countPulse, setCountPulse] = useState(false);
+
+  useEffect(() => {
+    if (!inviteRoomId) return;
+    const t = setTimeout(() => {
+      setYouJoined(true);
+      setCountPulse(true);
+      setTimeout(() => setCountPulse(false), 800);
+    }, 1200);
+    return () => clearTimeout(t);
+  }, [inviteRoomId]);
 
   const toggle = (id) => {
     setSelected((prev) =>
@@ -31,8 +51,17 @@ export default function SocialLobby({ onNavigate }) {
     }).catch(() => {});
   };
 
-  const onlineFriends = FRIENDS.filter((f) => f.online);
+  const onlineFriends  = FRIENDS.filter((f) => f.online);
   const offlineFriends = FRIENDS.filter((f) => !f.online);
+
+  // If the user joined via invite, prepend "You" once the delay fires
+  const displayedOnline = youJoined ? [YOU_CARD, ...onlineFriends] : onlineFriends;
+
+  const startLabel = youJoined
+    ? `Start Together 🎉`
+    : selected.length > 0
+      ? `Start with ${selected.length} friend${selected.length > 1 ? 's' : ''}`
+      : 'Start Solo';
 
   return (
     <div className="lobby">
@@ -50,7 +79,9 @@ export default function SocialLobby({ onNavigate }) {
       {/* Room code share */}
       <div className="lobby__room glass-card">
         <div className="lobby__room-left">
-          <div className="lobby__room-label">Your Room Code</div>
+          <div className="lobby__room-label">
+            {inviteRoomId ? 'Joined Room' : 'Your Room Code'}
+          </div>
           <div className="lobby__room-code">{roomCode}</div>
           <div className="lobby__room-hint">
             {`${window.location.origin}/?room=${roomCode}`}
@@ -61,24 +92,37 @@ export default function SocialLobby({ onNavigate }) {
         </button>
       </div>
 
-      {/* Online friends — one-tap large cards */}
-      <div className="lobby__section-title">
+      {/* "You just joined!" banner — guest mode only */}
+      {youJoined && (
+        <div className="lobby__joined-banner">
+          🎉 You joined the room! Your friends can see you're online.
+        </div>
+      )}
+
+      {/* Online friends */}
+      <div className={`lobby__section-title${countPulse ? ' lobby__section-title--pulse' : ''}`}>
         <span className="lobby__online-dot" />
-        Online — {onlineFriends.length} friends ready to play
+        Online — {displayedOnline.length} {displayedOnline.length === 1 ? 'friend' : 'friends'} ready to play
       </div>
       <div className="lobby__friends">
-        {onlineFriends.map((friend) => (
+        {displayedOnline.map((friend) => (
           <button
             key={friend.id}
-            className={`lobby__friend-card ${selected.includes(friend.id) ? 'lobby__friend-card--selected' : ''}`}
-            onClick={() => toggle(friend.id)}
+            className={[
+              'lobby__friend-card',
+              friend.isYou ? 'lobby__friend-card--you' : '',
+              selected.includes(friend.id) ? 'lobby__friend-card--selected' : '',
+            ].join(' ').trim()}
+            onClick={() => !friend.isYou && toggle(friend.id)}
           >
             <div className="lobby__friend-avatar" style={{ background: friend.color + '28' }}>
               <span className="lobby__friend-emoji">{friend.emoji}</span>
               <div className="lobby__online-indicator" />
             </div>
             <span className="lobby__friend-name">{friend.name}</span>
-            <span className="lobby__friend-badge">✓ Verified</span>
+            <span className={`lobby__friend-badge${friend.isYou ? ' lobby__friend-badge--you' : ''}`}>
+              {friend.isYou ? '👋 You' : '✓ Verified'}
+            </span>
             {selected.includes(friend.id) && <div className="lobby__check">✓</div>}
           </button>
         ))}
@@ -115,10 +159,7 @@ export default function SocialLobby({ onNavigate }) {
           style={{ flex: 1 }}
           onClick={() => onNavigate('course')}
         >
-          🚀{' '}
-          {selected.length > 0
-            ? `Start with ${selected.length} friend${selected.length > 1 ? 's' : ''}`
-            : 'Start Solo'}
+          🚀 {startLabel}
         </button>
       </div>
     </div>
