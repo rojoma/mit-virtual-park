@@ -1,0 +1,251 @@
+/* ============================================
+   Agent Panel — Claude Integration Mock
+   ============================================ */
+
+.agent-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 200;
+  display: flex;
+  justify-content: flex-end;
+}
+
+.agent-overlay__backdrop {
+  position: absolute;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.5);
+  backdrop-filter: blur(4px);
+  animation: fadeIn 0.3s ease-out;
+}
+
+.agent-panel {
+  position: relative;
+  width: 420px;
+  max-width: 90vw;
+  height: 100%;
+  background: linear-gradient(180deg, #FFF8F0 0%, #FFE8D6 100%);
+  border-left: 1px solid var(--border-glass);
+  display: flex;
+  flex-direction: column;
+  animation: slideInRight 0.4s ease-out;
+  z-index: 1;
+}
+
+/* Header */
+.agent-panel__header {
+  padding: var(--space-lg) var(--space-xl);
+  border-bottom: 1px solid var(--border-glass);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.agent-panel__header-left {
+  display: flex;
+  align-items: center;
+  gap: var(--space-md);
+}
+
+.agent-panel__icon {
+  width: 40px;
+  height: 40px;
+  border-radius: var(--radius-md);
+  background: linear-gradient(135deg, var(--primary), var(--accent-pink));
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.2rem;
+}
+
+.agent-panel__title {
+  font-size: 1.1rem;
+  font-weight: 700;
+}
+
+.agent-panel__subtitle {
+  font-size: 0.75rem;
+  color: var(--text-muted);
+}
+
+.agent-panel__close {
+  background: none;
+  border: none;
+  color: var(--text-muted);
+  font-size: 1.5rem;
+  cursor: pointer;
+  padding: var(--space-xs);
+  transition: color var(--transition-fast);
+  line-height: 1;
+}
+
+.agent-panel__close:hover {
+  color: var(--text-primary);
+}
+
+/* Body */
+.agent-panel__body {
+  flex: 1;
+  overflow-y: auto;
+  padding: var(--space-xl);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-xl);
+}
+
+/* Input section */
+.agent-panel__section {
+  animation: fadeIn 0.5s ease-out;
+}
+
+.agent-panel__section:nth-child(2) {
+  animation-delay: 0.1s;
+}
+
+.agent-panel__section:nth-child(3) {
+  animation-delay: 0.2s;
+}
+
+.agent-panel__label {
+  font-size: 0.8rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 1.5px;
+  color: var(--text-muted);
+  margin-bottom: var(--space-sm);
+}
+
+.agent-panel__textarea {
+  width: 100%;
+  min-height: 100px;
+  background: var(--bg-glass);
+  border: 1px solid var(--border-glass);
+  border-radius: var(--radius-md);
+  color: var(--text-primary);
+  font-family: var(--font-family);
+  font-size: 0.95rem;
+  padding: var(--space-md);
+  resize: vertical;
+  transition: border-color var(--transition-normal);
+  line-height: 1.5;
+}
+
+.agent-panel__textarea:focus {
+  outline: none;
+  border-color: var(--primary-light);
+}
+
+.agent-panel__textarea::placeholder {
+  color: var(--text-muted);
+}
+
+/* Generated preset card */
+.agent-panel__preset {
+  padding: var(--space-lg);
+  background: rgba(255, 107, 107, 0.08);
+  border: 1px solid rgba(255, 107, 107, 0.2);
+}
+
+.agent-panel__preset-header {
+  display: flex;
+  align-items: center;
+  gap: var(--space-sm);
+  margin-bottom: var(--space-md);
+}
+
+.agent-panel__preset-icon {
+  font-size: 1.5rem;
+}
+
+.agent-panel__preset-title {
+  font-weight: 700;
+  font-size: 1rem;
+}
+
+.agent-panel__preset-badge {
+  margin-left: auto;
+  padding: 2px 8px;
+  background: rgba(255, 107, 107, 0.15);
+  border-radius: var(--radius-full);
+  font-size: 0.7rem;
+  font-weight: 600;
+  color: var(--primary-light);
+}
+
+.agent-panel__preset-items {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-sm);
+}
+
+.agent-panel__preset-item {
+  display: flex;
+  align-items: center;
+  gap: var(--space-sm);
+  font-size: 0.85rem;
+  color: var(--text-secondary);
+}
+
+.agent-panel__preset-item-icon {
+  color: var(--secondary);
+}
+
+/* Progress bar */
+.agent-panel__progress {
+  margin-top: var(--space-md);
+}
+
+.agent-panel__progress-bar {
+  width: 100%;
+  height: 4px;
+  background: rgba(45, 27, 105, 0.08);
+  border-radius: 2px;
+  overflow: hidden;
+  margin-bottom: var(--space-sm);
+}
+
+.agent-panel__progress-fill {
+  height: 100%;
+  background: linear-gradient(90deg, var(--primary), var(--secondary));
+  border-radius: 2px;
+  transition: width 0.3s ease;
+}
+
+.agent-panel__progress-text {
+  font-size: 0.75rem;
+  color: var(--text-muted);
+  text-align: center;
+}
+
+/* Quick presets */
+.agent-panel__quick-presets {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-sm);
+}
+
+.agent-panel__quick-preset {
+  padding: var(--space-sm) var(--space-md);
+  background: var(--bg-glass);
+  border: 1px solid var(--border-glass);
+  border-radius: var(--radius-full);
+  font-family: var(--font-family);
+  font-size: 0.8rem;
+  color: var(--text-secondary);
+  cursor: pointer;
+  transition: all var(--transition-normal);
+  display: flex;
+  align-items: center;
+  gap: var(--space-xs);
+}
+
+.agent-panel__quick-preset:hover {
+  background: var(--bg-glass-hover);
+  border-color: var(--primary-light);
+  color: var(--text-primary);
+}
+
+/* Footer */
+.agent-panel__footer {
+  padding: var(--space-lg) var(--space-xl);
+  border-top: 1px solid var(--border-glass);
+}

@@ -1,0 +1,258 @@
+/* ============================================
+   Social Lobby — One-tap Join with Verified Families
+   ============================================ */
+
+.lobby {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  padding: var(--space-xl) var(--space-2xl);
+  position: relative;
+  overflow-y: auto;
+  overflow-x: hidden;
+  background: var(--bg-deep);
+  gap: var(--space-lg);
+}
+
+/* Ambient background */
+.lobby__bg {
+  position: fixed;
+  inset: 0;
+  background:
+    radial-gradient(ellipse at 20% 20%, rgba(0, 206, 201, 0.14), transparent 55%),
+    radial-gradient(ellipse at 80% 80%, rgba(108, 92, 231, 0.11), transparent 50%);
+  z-index: 0;
+  pointer-events: none;
+}
+
+/* Header */
+.lobby__header {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  align-items: flex-start;
+  gap: var(--space-lg);
+  animation: fadeIn 0.5s ease-out;
+}
+
+.lobby__back {
+  background: none;
+  border: none;
+  color: var(--text-secondary);
+  font-family: var(--font-family);
+  font-size: 0.9rem;
+  cursor: pointer;
+  padding: 0;
+  margin-top: 6px;
+  transition: color var(--transition-fast);
+  white-space: nowrap;
+}
+
+.lobby__back:hover {
+  color: var(--primary);
+}
+
+.lobby__title {
+  font-family: var(--font-display);
+  font-size: 2.2rem;
+  font-weight: 700;
+  margin-bottom: 2px;
+}
+
+.lobby__subtitle {
+  color: var(--text-secondary);
+  font-size: 0.9rem;
+}
+
+/* Room code card */
+.lobby__room {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-lg);
+  padding: var(--space-lg) var(--space-xl);
+  animation: fadeIn 0.5s ease-out 0.1s both;
+}
+
+.lobby__room-left {
+  flex: 1;
+}
+
+.lobby__room-label {
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  letter-spacing: 1.5px;
+  color: var(--text-muted);
+  margin-bottom: var(--space-xs);
+}
+
+.lobby__room-code {
+  font-family: var(--font-display);
+  font-size: 1.8rem;
+  font-weight: 700;
+  color: var(--primary);
+  letter-spacing: 0.08em;
+}
+
+.lobby__room-hint {
+  font-size: 0.8rem;
+  color: var(--text-muted);
+  margin-top: 2px;
+}
+
+.lobby__room-copy {
+  flex-shrink: 0;
+  padding: var(--space-sm) var(--space-lg) !important;
+  font-size: 0.95rem !important;
+  min-height: 40px !important;
+}
+
+/* Section titles */
+.lobby__section-title {
+  position: relative;
+  z-index: 1;
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: var(--text-secondary);
+  text-transform: uppercase;
+  letter-spacing: 1.5px;
+  display: flex;
+  align-items: center;
+  gap: var(--space-sm);
+  animation: fadeIn 0.5s ease-out 0.2s both;
+}
+
+.lobby__section-title--muted {
+  color: var(--text-muted);
+}
+
+.lobby__online-dot {
+  width: 8px;
+  height: 8px;
+  background: var(--primary);
+  border-radius: 50%;
+  animation: pulse 1.5s ease-in-out infinite;
+  flex-shrink: 0;
+}
+
+/* ==========================================
+   Friend cards — large, one-tap
+   ========================================== */
+.lobby__friends {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  gap: var(--space-md);
+  flex-wrap: wrap;
+  animation: fadeIn 0.5s ease-out 0.3s both;
+}
+
+.lobby__friends--offline {
+  opacity: 0.55;
+}
+
+.lobby__friend-card {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-sm);
+  padding: var(--space-lg) var(--space-md);
+  width: 112px;
+  background: rgba(255, 255, 255, 0.82);
+  border: 2px solid rgba(45, 27, 105, 0.1);
+  border-radius: var(--radius-xl);
+  cursor: pointer;
+  transition: all var(--transition-normal);
+  position: relative;
+  font-family: var(--font-family);
+  box-shadow: 0 2px 12px rgba(45, 27, 105, 0.07);
+}
+
+.lobby__friend-card:hover {
+  background: rgba(255, 255, 255, 0.96);
+  border-color: rgba(0, 206, 201, 0.5);
+  transform: translateY(-4px);
+  box-shadow: 0 8px 24px rgba(0, 206, 201, 0.2);
+}
+
+.lobby__friend-card--selected {
+  background: rgba(0, 206, 201, 0.1);
+  border-color: var(--primary);
+  box-shadow: 0 0 20px rgba(0, 206, 201, 0.3);
+}
+
+.lobby__friend-avatar {
+  width: 64px;
+  height: 64px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+}
+
+.lobby__friend-emoji {
+  font-size: 2rem;
+}
+
+.lobby__online-indicator {
+  position: absolute;
+  bottom: 2px;
+  right: 2px;
+  width: 14px;
+  height: 14px;
+  background: var(--primary);
+  border-radius: 50%;
+  border: 2px solid var(--bg-deep);
+  animation: pulse 2s ease-in-out infinite;
+}
+
+.lobby__friend-name {
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: var(--text-primary);
+}
+
+.lobby__friend-badge {
+  font-size: 0.62rem;
+  color: var(--primary);
+  background: rgba(0, 206, 201, 0.12);
+  padding: 2px 8px;
+  border-radius: var(--radius-full);
+  font-weight: 600;
+}
+
+.lobby__friend-badge--offline {
+  color: var(--text-muted);
+  background: rgba(45, 27, 105, 0.07);
+}
+
+.lobby__check {
+  position: absolute;
+  top: var(--space-sm);
+  right: var(--space-sm);
+  width: 22px;
+  height: 22px;
+  background: var(--primary);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.75rem;
+  color: #0D1117;
+  font-weight: 700;
+  animation: scaleIn 0.2s ease-out;
+}
+
+/* Actions */
+.lobby__actions {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  gap: var(--space-md);
+  margin-top: auto;
+  padding-top: var(--space-md);
+  animation: fadeInUp 0.5s ease-out 0.4s both;
+}
