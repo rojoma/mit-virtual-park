@@ -1,78 +1,84 @@
 import { useState, useEffect } from 'react';
 import './App.css';
-import ParentPortal from './components/ParentPortal';
-import SocialLobby from './components/SocialLobby';
-import CourseSelection from './components/CourseSelection';
-import ActivePlay from './components/ActivePlay';
-import CoolDown from './components/CoolDown';
-import AgentPanel from './components/AgentPanel';
+import NameEntry      from './components/NameEntry';
+import ParkMap        from './components/ParkMap';
+import ActivePlay     from './components/ActivePlay';
+import Result         from './components/Result';
+// Legacy screens kept for potential direct navigation
+import SocialLobby    from './components/SocialLobby';
 
 export default function App() {
-  const [screen, setScreen] = useState('portal');
-  const [showAgent, setShowAgent] = useState(false);
+  const [screen,      setScreen]      = useState(() =>
+    localStorage.getItem('park_user_name') ? 'park' : 'name'
+  );
   const [transitioning, setTransitioning] = useState(false);
+  const [userName,    setUserName]    = useState(
+    () => localStorage.getItem('park_user_name') || ''
+  );
+  const [gameResult,  setGameResult]  = useState({
+    playerScore: 0, cpuScore: 0, playerWon: false,
+  });
   const [roomId, setRoomId] = useState(null);
-  const [courseMins, setCourseMins] = useState(15);
-  // Session data lifted to App so CoolDown can display stats
-  const [sessionData, setSessionData] = useState({ score: 0, time: 0 });
 
-  // URL param ?room=ABCD → join the same lobby (not skip to course)
+  // ?room=ABCD → multiplayer lobby (future)
   useEffect(() => {
     const params = new URLSearchParams(window.location.search);
-    const room = params.get('room');
+    const room   = params.get('room');
     if (room) {
       setRoomId(room.toUpperCase());
-      setScreen('lobby');
+      // If we have a name, go to lobby; otherwise name entry first
+      if (localStorage.getItem('park_user_name')) {
+        doSetScreen('lobby');
+      }
     }
-  }, []);
+  }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
-  // navigate(target) or navigate('play', { courseMins }) or navigate('cooldown', { score, time })
-  const navigate = (target, data = {}) => {
-    if (data.score !== undefined) {
-      setSessionData({ score: data.score, time: data.time ?? 0 });
-    }
-    if (data.courseMins !== undefined) {
-      setCourseMins(data.courseMins);
-    }
+  const doSetScreen = (s) => {
     setTransitioning(true);
-    setTimeout(() => {
-      setScreen(target);
-      setTransitioning(false);
-    }, 300);
+    setTimeout(() => { setScreen(s); setTransitioning(false); }, 280);
   };
 
-  const isPlay = screen === 'play';
+  const navigate = (target, data = {}) => {
+    if (data.playerScore !== undefined) {
+      setGameResult({
+        playerScore: data.playerScore,
+        cpuScore:    data.cpuScore   ?? 0,
+        playerWon:   data.playerWon  ?? false,
+      });
+    }
+    doSetScreen(target);
+  };
+
+  const handleNameComplete = (name) => {
+    setUserName(name);
+    doSetScreen('park');
+  };
 
   const renderScreen = () => {
     switch (screen) {
-      case 'portal':   return <ParentPortal onNavigate={navigate} />;
-      case 'lobby':    return <SocialLobby onNavigate={navigate} roomId={roomId} />;
-      case 'course':   return <CourseSelection onNavigate={navigate} />;
-      case 'play':     return <ActivePlay onNavigate={navigate} roomId={roomId} courseMins={courseMins} />;
-      case 'cooldown': return <CoolDown onNavigate={navigate} score={sessionData.score} time={sessionData.time} />;
-      default:         return <ParentPortal onNavigate={navigate} />;
+      case 'name':   return <NameEntry onComplete={handleNameComplete} />;
+      case 'park':   return <ParkMap   userName={userName} onNavigate={navigate} />;
+      case 'play':   return <ActivePlay userName={userName} onNavigate={navigate} />;
+      case 'result': return (
+        <Result
+          userName={userName}
+          onNavigate={navigate}
+          playerScore={gameResult.playerScore}
+          cpuScore={gameResult.cpuScore}
+          playerWon={gameResult.playerWon}
+        />
+      );
+      // Legacy multiplayer lobby
+      case 'lobby':  return <SocialLobby onNavigate={navigate} roomId={roomId} />;
+      default:       return <NameEntry onComplete={handleNameComplete} />;
     }
   };
 
   return (
     <div className="app">
-      {/* AI agent button hidden during play to prevent child taps (Step 2) */}
-      {!isPlay && (
-        <button
-          className="app__agent-btn"
-          onClick={() => setShowAgent(true)}
-          title="AI Game Designer"
-        >
-          <span className="app__agent-btn-icon">🤖</span>
-          <span className="app__agent-btn-pulse" />
-        </button>
-      )}
-
       <div className={`app__screen ${transitioning ? 'app__screen--exit' : 'app__screen--enter'}`}>
         {renderScreen()}
       </div>
-
-      {showAgent && <AgentPanel onClose={() => setShowAgent(false)} />}
     </div>
   );
 }

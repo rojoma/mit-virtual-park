@@ -1,0 +1,119 @@
+/* ============================================
+   NameEntry — Park splash screen
+   ============================================ */
+.name-entry {
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(160deg, #a8d8ea 0%, #b8e4c9 60%, #8fc98f 100%);
+  position: relative;
+  overflow: hidden;
+}
+
+.name-entry__bg {
+  position: absolute;
+  inset: 0;
+  background:
+    radial-gradient(circle at 15% 25%, rgba(255,255,255,0.35), transparent 35%),
+    radial-gradient(circle at 80% 70%, rgba(100,200,120,0.25), transparent 40%);
+  pointer-events: none;
+}
+
+.name-entry__card {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 20px;
+  padding: 48px 40px;
+  width: min(460px, 90%);
+  text-align: center;
+  background: rgba(255,255,255,0.82);
+  backdrop-filter: blur(14px);
+  border-radius: 24px;
+  box-shadow: 0 12px 40px rgba(0,100,60,0.18);
+  border: 1.5px solid rgba(255,255,255,0.9);
+  animation: fadeInUp 0.6s ease-out;
+}
+
+.name-entry__tree {
+  font-size: 4rem;
+  line-height: 1;
+  animation: float 3s ease-in-out infinite;
+}
+
+@keyframes float {
+  0%, 100% { transform: translateY(0); }
+  50%       { transform: translateY(-10px); }
+}
+
+.name-entry__title {
+  font-family: var(--font-display, var(--font-family));
+  font-size: 2.2rem;
+  font-weight: 700;
+  color: #1b5e20;
+  margin: 0;
+}
+
+.name-entry__subtitle {
+  font-size: 1.1rem;
+  color: #4a7a5a;
+  margin: 0;
+}
+
+.name-entry__input {
+  width: 100%;
+  padding: 14px 20px;
+  font-size: 1.5rem;
+  font-family: var(--font-display, var(--font-family));
+  border: 2px solid rgba(27,94,32,0.2);
+  border-radius: 16px;
+  background: rgba(255,255,255,0.95);
+  color: #1b2e20;
+  text-align: center;
+  outline: none;
+  transition: border-color 0.2s, box-shadow 0.2s;
+  box-sizing: border-box;
+}
+
+.name-entry__input:focus {
+  border-color: #4caf50;
+  box-shadow: 0 0 0 3px rgba(76,175,80,0.2);
+}
+
+.name-entry__input::placeholder {
+  color: #aac0aa;
+}
+
+.name-entry__btn {
+  width: 100%;
+  padding: 16px;
+  font-size: 1.1rem;
+  font-family: var(--font-display, var(--font-family));
+  font-weight: 700;
+  background: linear-gradient(135deg, #43a047, #1b5e20);
+  color: white;
+  border: none;
+  border-radius: 16px;
+  cursor: pointer;
+  transition: all 0.2s;
+  box-shadow: 0 4px 16px rgba(27,94,32,0.3);
+}
+
+.name-entry__btn:hover:not(:disabled) {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 24px rgba(27,94,32,0.4);
+}
+
+.name-entry__btn:disabled {
+  opacity: 0.45;
+  cursor: default;
+}
+
+.name-entry__note {
+  font-size: 0.72rem;
+  color: #7a9a7a;
+  margin: 0;
+}

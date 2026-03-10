@@ -1,607 +1,333 @@
 /* ============================================
-   Active Play — Core Experience
+   ActivePlay — Jump game screen
    ============================================ */
-
-.play {
+.aplay {
   height: 100%;
   display: flex;
   flex-direction: column;
-  position: relative;
+  background: #0a0a18;
   overflow: hidden;
+  color: white;
 }
 
-/* Top bar — bright HUD */
-.play__topbar {
+/* ── Header ── */
+.aplay__header {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: var(--space-md) var(--space-lg);
-  z-index: 10;
-  background: rgba(255, 248, 240, 0.97);
-  backdrop-filter: blur(12px);
-  border-bottom: 2px solid rgba(0, 206, 201, 0.25);
-  box-shadow: 0 2px 12px rgba(45, 27, 105, 0.08);
-  animation: slideDown 0.4s ease-out;
+  padding: 8px 20px;
+  background: rgba(255,255,255,0.04);
+  border-bottom: 1px solid rgba(255,255,255,0.07);
+  flex-shrink: 0;
 }
 
-.play__topbar-left {
-  display: flex;
-  align-items: center;
-  gap: var(--space-md);
-}
-
-.play__back-btn {
+.aplay__quit {
   background: none;
-  border: none;
-  color: var(--text-secondary);
-  font-size: 1.2rem;
+  border: 1px solid rgba(255,100,80,0.45);
+  color: #ff6e50;
+  padding: 5px 14px;
+  border-radius: 20px;
   cursor: pointer;
-  padding: var(--space-xs);
-  transition: color var(--transition-fast);
-}
-
-.play__back-btn:hover {
-  color: var(--primary);
-}
-
-.play__session-info {
-  display: flex;
-  align-items: center;
-  gap: var(--space-sm);
-}
-
-.play__live-dot {
-  width: 8px;
-  height: 8px;
-  background: var(--accent-coral);
-  border-radius: 50%;
-  animation: pulse 1.5s ease-in-out infinite;
-}
-
-.play__session-label {
-  font-size: 0.85rem;
+  font-size: 0.82rem;
   font-weight: 600;
-  color: var(--text-secondary);
+  font-family: var(--font-family);
+  transition: all 0.18s;
+}
+.aplay__quit:hover {
+  background: rgba(255,100,80,0.12);
 }
 
-.play__timer {
-  font-family: var(--font-display);
-  font-size: 1.1rem;
+.aplay__title {
+  font-size: 0.95rem;
   font-weight: 700;
-  font-variant-numeric: tabular-nums;
-  color: var(--primary);
-  transition: color var(--transition-normal);
+  color: rgba(255,255,255,0.9);
 }
 
-.play__timer--warning {
-  color: var(--accent-coral);
-  animation: pulse 1s ease-in-out infinite;
-}
-
-.play__topbar-right {
-  display: flex;
-  align-items: center;
-  gap: var(--space-md);
-}
-
-.play__score {
-  display: flex;
-  align-items: center;
-  gap: var(--space-xs);
-  padding: var(--space-xs) var(--space-md);
-  background: rgba(255, 179, 71, 0.2);
-  border-radius: var(--radius-full);
-  font-family: var(--font-display);
-  font-weight: 700;
-  color: var(--accent-orange);
-  font-size: 1rem;
-}
-
-.play__end-btn {
-  padding: var(--space-sm) var(--space-md);
+.aplay__goal {
   font-size: 0.85rem;
+  font-weight: 700;
+  color: #ffd700;
 }
 
-/* Split-screen main */
-.play__main {
-  flex: 1;
-  display: flex;
-  gap: 2px;
-  min-height: 0;
-}
-
-/* ==========================================
-   Multi-feed layout (left column)
-   ========================================== */
-.play__feeds {
-  width: 35%;
+/* ── Progress bars ── */
+.aplay__bars {
+  padding: 8px 20px 6px;
+  background: rgba(255,255,255,0.025);
+  border-bottom: 1px solid rgba(255,255,255,0.06);
+  flex-shrink: 0;
   display: flex;
   flex-direction: column;
-  gap: 2px;
-  min-height: 0;
+  gap: 4px;
 }
 
-/* Camera panel */
-.play__camera {
-  position: relative;
-  background: var(--bg-deep);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  overflow: hidden;
-}
-
-.play__camera--main {
-  flex: 2;
-  animation: slideInLeft 0.6s ease-out;
-}
-
-/* Video + Canvas container */
-.play__camera-container {
-  width: 100%;
-  height: 100%;
-  position: relative;
-  overflow: hidden;
-}
-
-.play__video {
-  width: 100%;
-  height: 100%;
-  object-fit: contain;
-  transform: scaleX(-1);
-  /* Mirror the webcam */
-}
-
-.play__canvas {
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  object-fit: contain;
-  transform: scaleX(-1);
-  /* Mirror to match video */
-  pointer-events: none;
-  z-index: 2;
-}
-
-/* Loading overlay when camera/model aren't ready */
-.play__camera-loading {
-  position: absolute;
-  inset: 0;
-  z-index: 3;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  gap: var(--space-md);
-  background: linear-gradient(180deg, #E8D5F5 0%, #F5E6D3 100%);
-}
-
-.play__camera-loading-spinner {
-  width: 48px;
-  height: 48px;
-  border: 3px solid rgba(78, 205, 196, 0.2);
-  border-top-color: var(--secondary);
-  border-radius: 50%;
-  animation: spin 1s linear infinite;
-}
-
-.play__camera-loading-text {
-  font-size: 0.9rem;
-  color: var(--text-secondary);
-  text-align: center;
-  padding: 0 var(--space-lg);
-}
-
-.play__camera-guide {
-  position: absolute;
-  top: var(--space-md);
-  left: 50%;
-  transform: translateX(-50%);
-  background: rgba(45, 27, 105, 0.7);
-  color: white;
-  padding: var(--space-xs) var(--space-md);
-  border-radius: var(--radius-full);
-  font-size: 0.75rem;
-  font-weight: 500;
-  white-space: nowrap;
-  z-index: 5;
-  pointer-events: none;
-  animation: fadeIn 0.5s ease-out;
-}
-
-/* Camera status label */
-.play__camera-label {
-  position: absolute;
-  bottom: var(--space-sm);
-  left: var(--space-sm);
+.aplay__bar-sub {
   font-size: 0.7rem;
-  color: white;
-  background: rgba(0, 0, 0, 0.5);
-  padding: var(--space-xs) var(--space-sm);
-  border-radius: var(--radius-sm);
-  z-index: 4;
+  color: rgba(255,255,255,0.4);
+  margin-bottom: 2px;
+}
+
+.aplay__bar-row {
   display: flex;
   align-items: center;
-  gap: var(--space-xs);
+  gap: 8px;
 }
 
-.play__tracking-dot {
-  width: 6px;
-  height: 6px;
-  background: var(--secondary);
-  border-radius: 50%;
-  animation: pulse 1s ease-in-out infinite;
-}
-
-.play__tracking-dot--inactive {
-  background: var(--accent-orange);
-}
-
-/* ==========================================
-   Mock player feeds (bottom of left column)
-   ========================================== */
-.play__feeds-row {
-  flex: 1;
-  display: flex;
-  gap: 2px;
-  animation: fadeIn 0.8s ease-out 0.3s both;
-}
-
-.play__camera--mock {
-  flex: 1;
-  position: relative;
-  overflow: hidden;
-}
-
-.play__mock-feed {
-  width: 100%;
-  height: 100%;
+.aplay__bar-name {
   display: flex;
   align-items: center;
-  justify-content: center;
-  position: relative;
-}
-
-.play__mock-avatar {
-  font-size: 3.5rem;
-  animation: mockBounce 2s ease-in-out infinite;
-  filter: drop-shadow(0 4px 8px rgba(0, 0, 0, 0.15));
-}
-
-.play__mock-live {
-  position: absolute;
-  top: var(--space-sm);
-  right: var(--space-sm);
-  display: flex;
-  align-items: center;
-  gap: 4px;
-  padding: 2px 8px;
-  background: rgba(0, 0, 0, 0.4);
-  border-radius: var(--radius-full);
-  font-size: 0.6rem;
-  color: white;
+  gap: 6px;
+  font-size: 0.78rem;
   font-weight: 600;
-}
-
-.play__mock-live-dot {
-  width: 5px;
-  height: 5px;
-  background: var(--accent-coral);
-  border-radius: 50%;
-  animation: pulse 1.5s ease-in-out infinite;
-}
-
-/* ==========================================
-   Daily video PiP overlay — top-right corner
-   of the game world panel.
-   VideoRoom component mounts inside this div.
-   ========================================== */
-.play__video-pip {
-  position: absolute;
-  top: var(--space-lg);
-  right: var(--space-lg);
-  width: 260px;
-  height: 195px; /* ~4:3 */
-  z-index: 20;
-  border-radius: var(--radius-xl);
-  overflow: hidden;
-  box-shadow: 0 8px 32px rgba(45, 27, 105, 0.25), 0 0 0 2px rgba(255,255,255,0.35);
-  animation: fadeIn 0.6s ease-out 0.5s both;
-}
-
-/* Game panel */
-.play__game {
-  flex: 1;
-  position: relative;
-  overflow: hidden;
-  animation: slideInRight 0.6s ease-out;
-}
-
-.play__game-world {
-  width: 100%;
-  height: 100%;
-  background: linear-gradient(180deg, #87CEEB 0%, #B0E0FF 40%, #98FB98 70%, #7CCD7C 85%, #5CB85C 100%);
-  position: relative;
-  overflow: hidden;
-}
-
-/* Game environment elements */
-.play__stars {
-  position: absolute;
-  inset: 0;
-}
-
-.play__star {
-  position: absolute;
-  width: 3px;
-  height: 3px;
-  background: rgba(255, 255, 255, 0.8);
-  border-radius: 50%;
-  animation: pulse 2s ease-in-out infinite;
-}
-
-.play__ground {
-  position: absolute;
-  bottom: 0;
-  left: 0;
-  right: 0;
-  height: 30%;
-  background: linear-gradient(180deg, #7CCD7C 0%, #5CB85C 100%);
-}
-
-.play__ground-detail {
-  position: absolute;
-  bottom: 0;
-  border-radius: 50%;
-  background: rgba(0, 0, 0, 0.06);
-}
-
-/* Game objects */
-.play__game-object {
-  position: absolute;
-  font-size: 2.5rem;
-  animation: float 3s ease-in-out infinite;
-  filter: drop-shadow(0 4px 8px rgba(0, 0, 0, 0.2));
-  transition: transform 0.2s ease;
-  cursor: pointer;
-}
-
-.play__game-object:hover {
-  transform: scale(1.3);
-}
-
-/* Bilingual prompt */
-.play__prompt {
-  position: absolute;
-  top: 45%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  text-align: center;
-  z-index: 5;
-  animation: scaleIn 0.5s ease-out;
-  pointer-events: none;
-}
-
-.play__prompt-main {
-  font-family: var(--font-display);
-  font-size: 4rem;
-  font-weight: 700;
-  color: white;
-  text-shadow: 0 4px 20px rgba(0, 0, 0, 0.4), 0 2px 4px rgba(0, 0, 0, 0.3);
-  margin-bottom: var(--space-xs);
-}
-
-.play__prompt-sub {
-  font-family: var(--font-display);
-  font-size: 2.2rem;
-  font-weight: 600;
-  color: var(--accent-orange);
-  text-shadow: 0 2px 10px rgba(0, 0, 0, 0.4);
-}
-
-/* ==========================================
-   Reaction buttons
-   ========================================== */
-.play__reactions {
-  position: absolute;
-  bottom: 80px;
-  left: 50%;
-  transform: translateX(-50%);
-  z-index: 10;
-  display: flex;
-  gap: var(--space-md);
-}
-
-.play__reaction-btn {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 4px;
-  padding: var(--space-md);
-  background: rgba(255, 255, 255, 0.75);
-  backdrop-filter: blur(10px);
-  border: 2px solid rgba(255, 255, 255, 0.4);
-  border-radius: var(--radius-xl);
-  cursor: pointer;
-  transition: all var(--transition-normal);
+  color: rgba(255,255,255,0.8);
   min-width: 72px;
 }
 
-.play__reaction-btn:hover {
-  transform: scale(1.15) translateY(-4px);
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+.aplay__dot {
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.72rem;
+  font-weight: 700;
+  color: white;
+  flex-shrink: 0;
 }
 
-.play__reaction-btn:active {
-  transform: scale(0.95);
+.aplay__track {
+  flex: 1;
+  height: 10px;
+  background: rgba(255,255,255,0.08);
+  border-radius: 5px;
+  overflow: hidden;
 }
 
-.play__reaction-emoji {
-  font-size: 2rem;
+.aplay__fill {
+  height: 100%;
+  border-radius: 5px;
+  transition: width 0.3s ease-out;
+}
+.aplay__fill--player {
+  background: linear-gradient(90deg, #ff9800, #ff5722);
+  box-shadow: 0 0 6px rgba(255,152,0,0.5);
+}
+.aplay__fill--cpu {
+  background: linear-gradient(90deg, #7c4dff, #b39ddb);
+  box-shadow: 0 0 6px rgba(124,77,255,0.5);
 }
 
-.play__reaction-label {
-  font-family: var(--font-display);
-  font-size: 0.65rem;
+.aplay__flag {
+  font-size: 0.7rem;
+  opacity: 0.5;
+}
+
+.aplay__bar-ct {
+  font-size: 0.72rem;
   font-weight: 600;
-  color: var(--text-secondary);
+  color: rgba(255,255,255,0.55);
+  min-width: 38px;
+  text-align: right;
 }
 
-/* Prompt bar at bottom of game */
-.play__prompt-bar {
+/* ── Main 2-panel area ── */
+.aplay__main {
+  flex: 1;
+  display: flex;
+  gap: 12px;
+  padding: 10px 16px;
+  min-height: 0;
+}
+
+/* Left: camera */
+.aplay__cam-wrap {
+  flex: 0 0 52%;
+  position: relative;
+  background: #000;
+  border-radius: 16px;
+  overflow: hidden;
+  border: 1.5px solid rgba(255,152,0,0.25);
+}
+
+.aplay__video {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transform: scaleX(-1);
+  display: block;
+}
+
+.aplay__canvas {
   position: absolute;
-  bottom: var(--space-lg);
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+}
+
+/* Instruction overlay (center of video) */
+.aplay__instruction {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  text-align: center;
+  pointer-events: none;
+}
+
+.aplay__instruction-en {
+  font-family: var(--font-display, var(--font-family));
+  font-size: 2rem;
+  font-weight: 700;
+  color: #ffd700;
+  text-shadow: 0 2px 12px rgba(0,0,0,0.7);
+}
+
+.aplay__instruction-ja {
+  font-size: 1rem;
+  color: rgba(255,255,255,0.7);
+  text-shadow: 0 1px 6px rgba(0,0,0,0.7);
+  margin-top: 2px;
+}
+
+/* Calib value */
+.aplay__calib {
+  position: absolute;
+  top: 8px;
+  left: 8px;
+  font-size: 0.68rem;
+  font-family: monospace;
+  color: rgba(255,255,255,0.45);
+  background: rgba(0,0,0,0.45);
+  padding: 2px 7px;
+  border-radius: 5px;
+}
+
+/* Player badge */
+.aplay__player-badge {
+  position: absolute;
+  bottom: 10px;
+  left: 10px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 0.78rem;
+  font-weight: 700;
+  color: white;
+  background: rgba(0,0,0,0.58);
+  padding: 5px 10px;
+  border-radius: 20px;
+}
+
+.aplay__badge-dot {
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.65rem;
+  font-weight: 700;
+  color: white;
+  flex-shrink: 0;
+}
+
+/* No pose warning */
+.aplay__no-pose {
+  position: absolute;
+  bottom: 48px;
   left: 50%;
   transform: translateX(-50%);
-  z-index: 5;
-  display: flex;
-  align-items: center;
-  gap: var(--space-md);
-  padding: var(--space-md) var(--space-lg);
-  background: rgba(255, 255, 255, 0.7);
-  backdrop-filter: blur(10px);
-  border-radius: var(--radius-full);
-  border: 1px solid rgba(255, 255, 255, 0.5);
-  white-space: nowrap;
-}
-
-.play__prompt-bar-text {
-  font-family: var(--font-display);
-  font-weight: 600;
-  font-size: 1.1rem;
-  color: var(--text-primary);
-}
-
-.play__prompt-bar-text span {
-  color: var(--accent-orange);
-  margin-left: var(--space-sm);
-}
-
-/* Player avatars in game */
-.play__players {
-  position: absolute;
-  top: var(--space-md);
-  right: var(--space-md);
-  display: flex;
-  flex-direction: column;
-  gap: var(--space-sm);
-  z-index: 5;
-}
-
-.play__player-tag {
-  display: flex;
-  align-items: center;
-  gap: var(--space-sm);
-  padding: var(--space-xs) var(--space-sm);
-  background: rgba(255, 255, 255, 0.6);
-  backdrop-filter: blur(6px);
-  border-radius: var(--radius-full);
   font-size: 0.75rem;
-  font-weight: 600;
-  color: var(--text-primary);
+  color: rgba(255,220,80,0.9);
+  background: rgba(0,0,0,0.55);
+  padding: 4px 12px;
+  border-radius: 12px;
+  white-space: nowrap;
+  pointer-events: none;
 }
 
-.play__player-avatar-sm {
-  width: 24px;
-  height: 24px;
-  border-radius: 50%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 0.7rem;
-}
-
-/* ==========================================
-   Gesture Zone (Step 1: body-based navigation mock)
-   Hover for 3 seconds → triggers parental lock exit
-   ========================================== */
-.play__gesture-zone {
-  position: absolute;
-  top: var(--space-md);
-  left: var(--space-md);
-  width: 72px;
-  height: 72px;
+/* Right: CPU panel */
+.aplay__cpu-panel {
+  flex: 1;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  cursor: pointer;
-  z-index: 10;
-  user-select: none;
-  background: rgba(255, 255, 255, 0.18);
-  border-radius: 50%;
-  border: 2px solid rgba(255, 255, 255, 0.35);
-  transition: background var(--transition-fast);
+  gap: 14px;
+  background: rgba(124,77,255,0.06);
+  border: 1.5px solid rgba(124,77,255,0.18);
+  border-radius: 16px;
 }
 
-.play__gesture-zone:hover {
-  background: rgba(255, 255, 255, 0.3);
-}
-
-/* SVG ring is slightly larger than the zone to sit on top of the border */
-.play__gesture-svg {
-  position: absolute;
-  inset: -10px;
-  width: calc(100% + 20px);
-  height: calc(100% + 20px);
-  transform: rotate(-90deg); /* ring starts from top */
-  pointer-events: none;
-}
-
-.play__gesture-track {
-  fill: none;
-  stroke: rgba(255, 255, 255, 0.25);
-  stroke-width: 4;
-}
-
-.play__gesture-progress {
-  fill: none;
-  stroke: var(--primary);
-  stroke-width: 4;
-  stroke-dasharray: 163.4; /* 2π × 26 */
-  stroke-dashoffset: 163.4;
-  stroke-linecap: round;
-}
-
-.play__gesture-progress--active {
-  animation: gestureRing 3s linear forwards;
-}
-
-@keyframes gestureRing {
-  to { stroke-dashoffset: 0; }
-}
-
-.play__gesture-icon {
-  font-size: 1.8rem;
-  filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.25));
-  position: relative;
-  z-index: 1;
+.aplay__cpu-avatar {
+  font-size: 4rem;
   line-height: 1;
+  animation: floatRobot 3s ease-in-out infinite;
 }
 
-.play__gesture-label {
-  font-family: var(--font-display);
-  font-size: 0.6rem;
-  font-weight: 600;
-  color: rgba(255, 255, 255, 0.95);
-  text-shadow: 0 1px 4px rgba(0, 0, 0, 0.4);
-  position: relative;
-  z-index: 1;
-  line-height: 1;
+@keyframes floatRobot {
+  0%, 100% { transform: translateY(0); }
+  50%       { transform: translateY(-8px); }
 }
 
-/* ==========================================
-   SFX Burst (visual sound effects)
-   ========================================== */
-.sfx-burst {
-  position: absolute;
-  z-index: 100;
-  pointer-events: none;
-  font-family: var(--font-display);
+.aplay__cpu-name {
+  font-family: var(--font-display, var(--font-family));
+  font-size: 1.3rem;
   font-weight: 700;
-  font-size: 2.5rem;
-  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.2), 0 0 20px currentColor;
-  animation: sfxPop 0.8s ease-out forwards;
+  color: rgba(255,255,255,0.9);
+}
+
+.aplay__cpu-badge {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 0.78rem;
+  font-weight: 600;
+  color: rgba(255,255,255,0.7);
+  background: rgba(0,0,0,0.35);
+  padding: 5px 12px;
+  border-radius: 20px;
+}
+
+.aplay__cpu-status {
+  font-size: 0.8rem;
+  color: rgba(255,255,255,0.38);
+  font-style: italic;
+}
+
+/* ── Score bar ── */
+.aplay__scorebar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 10px 32px;
+  background: rgba(255,255,255,0.03);
+  border-top: 1px solid rgba(255,255,255,0.06);
+  flex-shrink: 0;
+}
+
+.aplay__sb-left,
+.aplay__sb-right {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+}
+
+.aplay__sb-score {
+  font-family: var(--font-display, var(--font-family));
+  font-size: 2rem;
+  font-weight: 700;
+  line-height: 1;
+}
+
+.aplay__sb-name {
+  font-size: 0.72rem;
+  color: rgba(255,255,255,0.45);
+}
+
+.aplay__sb-center {
+  font-size: 0.82rem;
+  color: rgba(255,255,255,0.38);
 }
